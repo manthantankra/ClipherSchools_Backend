@@ -40,10 +40,7 @@ exports.deleteUser = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
-        res.status(200).json({
-            success: true,
-            user
-        });
+        res.status(200).json(user);
     } catch (err) {
         next(err);
     }
@@ -84,12 +81,14 @@ exports.unsubscribe = async (req, res, next) => {
 exports.like = async (req, res, next) => {
     const id = req.user.id;
     const videoId = req.params.videoId;
+
     try {
         await Video.findByIdAndUpdate(videoId, {
             $addToSet: { likes: id },
             $pull: { dislikes: id }
         })
         res.status(200).json("The video has been liked.")
+        
     } catch (err) {
         next(err);
     }
